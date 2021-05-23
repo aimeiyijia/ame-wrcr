@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- <video src="./test.mp4" controls="controls"></video> -->
+    <video id="video" autoplay muted playsinline></video>
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="./presets.js"></script>
+    <script src="./scan.js"></script>
+    <script>
+      $(document).ready(() => {
+        WRCR()
+      })
+    </script>
+  </body>
+</html>
