@@ -1,17 +1,4 @@
-const testPreset = [
-  {
-    label: '1080p(FHD)',
-    width: 1920,
-    height: 1080,
-    ratio: '16:9',
-  },
-  {
-    label: '720p(HD)',
-    width: 1280,
-    height: 720,
-    scale: '16:9',
-  },
-]
+const testPreset = presets
 
 function awaitWraper(promise) {
   return promise.then(res => [null, res]).catch(err => [err, undefined])
@@ -62,9 +49,9 @@ function createVideoEl() {
   const videoEl = document.createElement('video')
   videoEl.autoplay = 'autoplay'
   videoEl.playsinline = 'playsinline'
-  videoEl.controls = 'controls'
+  // videoEl.controls = 'controls'
   // videoEl.src = './test.mp4'
-  document.body.appendChild(videoEl)
+  // document.body.appendChild(videoEl)
   return videoEl
 }
 
@@ -91,7 +78,7 @@ function getVideoWH(video) {
   }
 }
 
-// 利用视频的实际大小宽 高 与预设 宽高想比较，相同则摄像头满足该预设，否则不满足
+// 利用视频（不是视频元素）的实际大小宽 高 与预设 宽高想比较，相同则摄像头满足该预设，否则不满足
 function isEqualGivenPreset(preset, video) {
   const { videoWidth, videoHeight } = getVideoWH(video)
   if (videoWidth * videoHeight > 0) {
@@ -122,6 +109,7 @@ async function getUserMedia(candidate, device) {
   }
 }
 
+// 执行扫描
 async function WRCR() {
   // 创建视频元素
   const videoEl = createVideoEl()
@@ -129,14 +117,21 @@ async function WRCR() {
   // 获取所有的摄像头
   const videos = await getAllVideoinouts()
 
+  console.time()
+
   console.log(videos)
+
+  // 记录摄像头
   const resule = {}
 
+  let stream = null
+
   for (let video of videos) {
+    // 以摄像头deviceId为key,存储最终的扫描结果
     resule[video.deviceId] = []
     // 获取视频流
     for (let i of testPreset) {
-      const stream = await getUserMedia(i, {
+      stream = await getUserMedia(i, {
         id: video.deviceId,
       })
       if (stream) {
@@ -156,7 +151,12 @@ async function WRCR() {
     }
   }
 
-  console.log(resule, '123')
+  stopTrack(stream)
+
+  console.timeEnd()
+
+  // console.log(resule, '123')
+  return resule
 
   // d001a5278e67f231ec1bd4111eb36490937a1ef3d5a23de9fac7cc40868f75e5
 }

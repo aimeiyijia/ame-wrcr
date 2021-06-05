@@ -14,7 +14,9 @@
     <script src="./scan.js"></script>
     <script>
       $(document).ready(() => {
-        WRCR()
+        WRCR().then(res => {
+          console.log(res, '最终结果')
+        })
       })
     </script>
   </body>
