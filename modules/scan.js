@@ -55,7 +55,7 @@ function createVideoEl() {
   return videoEl
 }
 
-// 判断视频元数据加载完成
+// 判断视频元数据加载完成，这步未完成就无法得知渲染出的视频尺寸
 function isVideoMetaLoaded(video) {
   return new Promise((resolve, reject) => {
     try {
@@ -109,6 +109,23 @@ async function getUserMedia(candidate, device) {
   }
 }
 
+// 摄像头是否能正常使用
+async function isCameraCanUse(device) {
+  try {
+    let constraints = {
+      audio: false,
+      video: {
+        deviceId: device.id ? { exact: device.id } : undefined,
+      },
+    }
+    const stream = await navigator.mediaDevices.getUserMedia(constraints)
+    return stream
+  } catch (error) {
+    console.error(error, 'camera is can not use')
+    return false
+  }
+}
+
 // 执行扫描
 async function WRCR() {
   // 创建视频元素
@@ -119,44 +136,47 @@ async function WRCR() {
 
   console.time()
 
-  console.log(videos)
+  console.log(videos, '所有的视频轨道')
 
-  // 记录摄像头
-  const resule = {}
+  // 记录摄像头扫描结果
+  const results = {}
 
   let stream = null
 
   for (let video of videos) {
+    console.log(video, '摄像头')
+    const canUse = await isCameraCanUse(video)
+    console.log(canUse, '能否使用')
+    if (!canUse) {
+      return
+    }
     // 以摄像头deviceId为key,存储最终的扫描结果
-    resule[video.deviceId] = []
+    results[video.deviceId] = []
     // 获取视频流
     for (let i of testPreset) {
       stream = await getUserMedia(i, {
         id: video.deviceId,
       })
+      console.log(stream, '指定尺寸的流')
       if (stream) {
         videoEl.width = i.width
         videoEl.height = i.height
         videoEl.srcObject = stream
-
-        const re = await isVideoMetaLoaded(videoEl)
-        if (re) {
-          console.log(i)
-          console.log(isEqualGivenPreset(i, videoEl))
+        
+        const isLoad = await isVideoMetaLoaded(videoEl)
+        if (isLoad) {
+          // console.log(i)
+          // console.log(isEqualGivenPreset(i, videoEl))
           if (isEqualGivenPreset(i, videoEl)) {
-            resule[video.deviceId].push(i)
+            results[video.deviceId].push(i)
           }
         }
+        stopTrack(stream)
       }
     }
   }
 
-  stopTrack(stream)
-
   console.timeEnd()
 
-  // console.log(resule, '123')
-  return resule
-
-  // d001a5278e67f231ec1bd4111eb36490937a1ef3d5a23de9fac7cc40868f75e5
+  return results
 }
