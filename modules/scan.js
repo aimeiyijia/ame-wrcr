@@ -1,3 +1,4 @@
+// 内置预设扫描
 const testPreset = presets
 
 function awaitWraper(promise) {
@@ -109,7 +110,7 @@ async function getUserMedia(candidate, device) {
   }
 }
 
-// 摄像头是否能正常使用
+// 摄像头是否能正常使用（获取到流）
 async function isCameraCanUse(device) {
   try {
     let constraints = {
@@ -141,15 +142,8 @@ async function WRCR() {
   // 记录摄像头扫描结果
   const results = {}
 
-  let stream = null
-
   for (let video of videos) {
-    console.log(video, '摄像头')
-    const canUse = await isCameraCanUse(video)
-    console.log(canUse, '能否使用')
-    if (!canUse) {
-      return
-    }
+    let stream = null
     // 以摄像头deviceId为key,存储最终的扫描结果
     results[video.deviceId] = []
     // 获取视频流
@@ -157,23 +151,18 @@ async function WRCR() {
       stream = await getUserMedia(i, {
         id: video.deviceId,
       })
-      console.log(stream, '指定尺寸的流')
       if (stream) {
-        videoEl.width = i.width
-        videoEl.height = i.height
         videoEl.srcObject = stream
-        
+
         const isLoad = await isVideoMetaLoaded(videoEl)
         if (isLoad) {
-          // console.log(i)
-          // console.log(isEqualGivenPreset(i, videoEl))
           if (isEqualGivenPreset(i, videoEl)) {
             results[video.deviceId].push(i)
           }
         }
-        stopTrack(stream)
       }
     }
+    stopTrack(stream)
   }
 
   console.timeEnd()

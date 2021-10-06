@@ -1,15 +1,15 @@
 const presets = [
   {
-    label: '8K',
-    width: 7680,
-    height: 4320,
-    ratio: '16:9',
-  },
-  {
     label: '4K',
     width: 3840,
     height: 2160,
     ratio: '16:9',
+  },
+  {
+    label: '1440p',
+    width: 2560,
+    height: 1440,
+    ratio: '32:9',
   },
   {
     label: '1080p',
