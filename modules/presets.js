@@ -36,3 +36,4 @@ const presets = [
     scale: '4:3',
   },
 ]
+export default presets

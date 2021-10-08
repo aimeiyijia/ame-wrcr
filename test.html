@@ -10,13 +10,25 @@
     <!-- <video src="./test.mp4" controls="controls"></video> -->
     <video id="video" autoplay muted playsinline></video>
     <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script src="./modules/presets.js"></script>
-    <script src="./modules/scan.js"></script>
-    <script>
+    <!-- <script src="./modules/presets.js"></script>
+    <script src="./modules/scan.js"></script> -->
+    <!-- <script src="./modules/scan2.js"></script> -->
+    <!-- <script>
       $(document).ready(() => {
         autoScan().then(res => {
           console.log(res, '最终结果')
         })
+      })
+    </script> -->
+    <script type="module">
+      import WRCR from './modules/scan2.js'
+      $(document).ready(() => {
+        const scan= new WRCR()
+        // 62aab66bddcb8febd967a9e783520839b05f09ee465809ca08a0cfd7ecb0c4df
+        scan.autoScan().then(res => {
+          console.log(res, '最终结果')
+        })
+        // console.log(WRCR.autoScan)
       })
     </script>
   </body>
