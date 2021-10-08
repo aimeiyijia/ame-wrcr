@@ -9,25 +9,13 @@ const presets = [
     label: '1440p',
     width: 2560,
     height: 1440,
-    ratio: '32:9',
+    ratio: '16:9',
   },
   {
     label: '1080p',
     width: 1920,
     height: 1080,
     ratio: '16:9',
-  },
-  {
-    label: '1200p',
-    width: 1600,
-    height: 1200,
-    ratio: '4:3',
-  },
-  {
-    label: '960p',
-    width: 1280,
-    height: 960,
-    scale: '4:3',
   },
   {
     label: '720p',
